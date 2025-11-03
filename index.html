@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chatbot</title>
+</head>
+<body>
+    <h1>Sports Chatbot</h1>
+    <form onsubmit ="getAnswer(); return false;">
+    <input type="text" name="sports" id="sports" placeholder="Enter sports name"/>
+    <button type="submit">Search</button>
+    </form>
+    
+    <div id="answer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        
+  
+
+  
+  
+  function getAnswer(){
+        const sportsRef=document.querySelector("#sports");
+             const sports=sportsRef.value;
+             const divRef=document.querySelector("#answer");
+            divRef.innerHTML="<p>......... </p>"
+             
+  
+  const res = axios.post(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+    {
+      contents: [
+        {
+          parts: [
+            {
+        "text": `You are a sports expert and analyst. Use this sports knowledge database. 
+Answer customer questions about sports rules, history, players, teams, tournaments, and techniques.
+If asked about something unrelated to sports, politely redirect to sports-related topics.
+Question: ${sports}`  
+          },
+          ],
+        },
+      ],
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": "AIzaSyBLiZRYlmP3ydCHPh3jvl2-BDkXsst6msI", 
+      }
+    }
+  );
+  
+  res
+  .then((data) => {
+    const answer = data.data.candidates[0].content.parts[0].text;
+    divRef.innerHTML = `<p>${answer}</p>`; 
+    console.log(data);
+  })
+  .catch((error) => {
+    
+    divRef.innerHTML = `<p>Sorry there was an error. Please try again.</p>`; 
+    console.log(error);
+  });
+}
+    </script>
+</body>
+</html>
